@@ -53,6 +53,17 @@ class Lista {
         this.tamanho++
         return true
     }
+
+    buscar(valor) {
+        this.elem = this.cabeca
+        while (this.elem != null) {
+            if (this.elem.info == valor) {
+                return this.elem
+            }
+            this.elem = this.elem.prox
+        }
+        return null
+    }
 }
 
 var lista = new Lista();
@@ -68,6 +79,10 @@ var $formAdd = $('<form id="formAdd" onsubmit="adicionarNodo()">'
     + campoValor
     + campoIndice +
     '<button type="submit" class="btn enviar">Adicionar</button><br>'
+    + '</form>');
+var $formBsc = $('<form id="formBsc" onsubmit="buscarNodo()">'
+    + campoValor +
+    '<button type="submit" class="btn enviar">Buscar</button><br>'
     + '</form>');
 
 var $nodo = '<div class="nodo">'
@@ -86,7 +101,7 @@ function listarNodos(lista) {
     while (nodo !== null) {
         if (nodo.prox !== null) {
             $('#lista').append('<div class="nodo">'
-                + '<div class="conteudo">' + nodo.info + ' </div>'
+                + '<div class="conteudo">' + nodo.info + '</div>'
                 + '<div class="prox">' + nodo.prox.info + '</div>'
                 + '</div>');
         } else {
@@ -106,6 +121,24 @@ function adicionarNodo() {
     $('#erro').text("");
 }
 
+function buscarNodo() {
+    if ((lista.buscar($('#inputValor').val())) !== null) {
+        $('#erro').text("");
+        $('.nodo').css({
+            'border': '1px solid black'
+        })
+        let esteNodo = lista.buscar($('#inputValor').val())
+        let $esteNodo = '.conteudo:contains(' + esteNodo + ')'
+        $(".conteudo:contains('" + esteNodo + "')").text("oi")
+        $($esteNodo).css({
+            'border': '2px solid green'
+        })
+    } else {
+        $('#erro').text("");
+        $('#erro').text("Este valor não existe na lista!")
+    }
+}
+
 $(function () {
     listarNodos(lista);
 
@@ -122,6 +155,7 @@ $(function () {
 
     $('#bsc').on('click', function () {
         limparTextos()
+        $('#bsc').after($formBsc)
     })
 
     $('#del').on('click', function () {
@@ -134,6 +168,15 @@ $(document).on('submit', '#formAdd', function (e) {
     e.preventDefault();
     event.stopImmediatePropagation();
     lista.inserir($('#inputValor').val(), $('#inputIndice').val());
+    listarNodos(lista);
+    $('#erro').text("");
+})
+
+$(document).on('submit', '#formBsc', function (e) {
+    return false;
+    e.preventDefault();
+    event.stopImmediatePropagation();
+    buscarNodo();
     listarNodos(lista);
     $('#erro').text("");
 })
